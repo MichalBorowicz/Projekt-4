@@ -22,6 +22,7 @@ namespace Projekt_4_taśma_produkcyjna
     public partial class MainWindow : Window
     {
         private Line line;
+        private List<Wall> walls;
         private int directionX = 1;
         private int directionY = 0;
         private DispatcherTimer timer;
@@ -31,7 +32,7 @@ namespace Projekt_4_taśma_produkcyjna
             
             InitializeComponent();
             initBoard();
-            initLine();
+            initWall();
             initTimer();
             
         }
@@ -53,13 +54,32 @@ namespace Projekt_4_taśma_produkcyjna
             line.createLine();
             createObjects();
         }
-        void initLine()
+        void initWall()
         {
-            foreach (BaseLine item in line.line)
-            {
-                grid.Children.Add(item.rectangle);
-                line.reDraw(line.line);                
-            }
+            walls = new List<Wall>();
+            Wall wall1 = new Wall(0, 35, 20, 2);
+            grid.Children.Add(wall1.rectangle);
+            Grid.SetColumn(wall1.rectangle, wall1.coordinateX);
+            Grid.SetRow(wall1.rectangle, wall1.coordinateY);
+            Grid.SetColumnSpan(wall1.rectangle, wall1.width);
+            Grid.SetRowSpan(wall1.rectangle, wall1.height);
+            walls.Add(wall1);
+
+            Wall wall2 = new Wall(20, 37, 20, 2);
+            grid.Children.Add(wall2.rectangle);
+            Grid.SetColumn(wall2.rectangle, wall2.coordinateX);
+            Grid.SetRow(wall2.rectangle, wall2.coordinateY);
+            Grid.SetColumnSpan(wall2.rectangle, wall2.width);
+            Grid.SetRowSpan(wall2.rectangle, wall2.height);
+            walls.Add(wall2);
+
+            Wall wall3 = new Wall(40, 39, 20, 2);
+            grid.Children.Add(wall3.rectangle);
+            Grid.SetColumn(wall3.rectangle, wall3.coordinateX);
+            Grid.SetRow(wall3.rectangle, wall3.coordinateY);
+            Grid.SetColumnSpan(wall3.rectangle, wall3.width);
+            Grid.SetRowSpan(wall3.rectangle, wall3.height);
+            walls.Add(wall3);
         }
         void createObjects()
         {
@@ -68,15 +88,6 @@ namespace Projekt_4_taśma_produkcyjna
             {
                 grid.Children.Add(item.rectangle);
                 line.reDraw(line.objects);
-            }
-        }
-        void createWall()
-        {
-            line.createWall(0, 0);
-            foreach (Wall item in line.listOfWalls)
-            {
-                grid.Children.Add(item.rectangle);
-                line.reDraw(line.listOfWalls);
             }
         }
         private void move()
@@ -119,10 +130,14 @@ namespace Projekt_4_taśma_produkcyjna
         }
         public bool checkWallCollision()
         {
-            foreach (BaseLine baseLine in line.line)
+            foreach (Wall wall in walls)
             {
                 
-                if ((line.objects[0].coordinateX > baseLine.coordinateX)&&(line.objects[0].coordinateY+1==baseLine.coordinateY))
+                if ((line.objects[0].coordinateX>=wall.coordinateX)
+                    &&(line.objects[0].coordinateX<(wall.coordinateX+wall.width))
+                    &&(line.objects[0].coordinateY+1>=wall.coordinateY)
+                    &&(line.objects[0].coordinateY+1<(wall.coordinateY+wall.height))
+                    )
                     return true;
             }
             return false;
@@ -130,6 +145,11 @@ namespace Projekt_4_taśma_produkcyjna
         public bool checkBoardCollision()
         {
             return true;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            createObjects();
         }
     }
 }
